@@ -1,5 +1,5 @@
 const inquirer = require ('inquirer');
-const db = require('./config/connection')
+const {viewAllDep} = require('./SQLquery/viewAllDep')
 let inquireRes;
 
 const options =()=> {inquirer.prompt(
@@ -15,11 +15,15 @@ const options =()=> {inquirer.prompt(
       'Update an employee role',
       'Exit']
 })
-.then ((res)=> inquireRes=res.options)};
+.then ((res)=> inquireRes=res.options)
+.then (()=> SQLquery())}
 
 options();
 
-
+function SQLquery(){
+if (inquireRes === "View all department") {
+  viewAllDep()
+}}
 
 
 
