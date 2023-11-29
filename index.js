@@ -1,6 +1,24 @@
 const inquirer = require ('inquirer');
 const mysql = require('mysql2');
+let inquireRes;
 require('dotenv').config();
+
+const options =()=> {inquirer.prompt(
+  { type: 'list',
+    name: 'options',
+    message: 'What would you like to do?',
+    choices: ['View all department',
+      'View all roles',
+      'View all employees',
+      'Add a department',
+      'Add a role',
+      'Add an employee',
+      'Update an employee role',
+      'Exit']
+})
+.then ((res)=> inquireRes=res.options)};
+
+options();
 
 const db = mysql.createConnection(
   {
@@ -11,31 +29,6 @@ const db = mysql.createConnection(
   console.log(`Connected to the company_db database.`),
 );
 
-const questions = () => {
-    return inquirer.prompt([
-      {
-        type: 'list',
-        name: 'option',
-        message: 'What would you like to do?',
-        choices: ['View all department',
-          'View all roles',
-          'View all employees',
-          'Add a department',
-          'Add a role',
-          'Add an employee',
-          'Update an employee role']
-      },
-  ])
-};
 
-
-
-
-
-
-
-
-
-questions();
 
 
