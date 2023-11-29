@@ -3,15 +3,7 @@ const mysql = require('mysql2');
 let inquireRes;
 require('dotenv').config();
 
-// const db = mysql.createConnection(
-//   {
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASSWORD,
-//     database: 'company_db',
-//   },
-//   console.log(`Connected to the company_db database.`),
-// );
-const options =()=> inquirer.prompt(
+const options =()=> {inquirer.prompt(
   { type: 'list',
     name: 'options',
     message: 'What would you like to do?',
@@ -24,6 +16,19 @@ const options =()=> inquirer.prompt(
       'Update an employee role',
       'Exit']
 })
-.then ((res)=> inquireRes=res.options)
+.then ((res)=> inquireRes=res.options)};
+
+options();
+
+const db = mysql.createConnection(
+  {
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: 'company_db',
+  },
+  console.log(`Connected to the company_db database.`),
+);
+
+
 
 
