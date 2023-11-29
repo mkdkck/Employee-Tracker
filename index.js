@@ -1,7 +1,6 @@
 const inquirer = require ('inquirer');
-const mysql = require('mysql2');
+const db = require('./config/connection')
 let inquireRes;
-require('dotenv').config();
 
 const options =()=> {inquirer.prompt(
   { type: 'list',
@@ -20,14 +19,6 @@ const options =()=> {inquirer.prompt(
 
 options();
 
-const db = mysql.createConnection(
-  {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: 'company_db',
-  },
-  console.log(`Connected to the company_db database.`),
-);
 
 
 
