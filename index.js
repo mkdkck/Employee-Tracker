@@ -1,15 +1,8 @@
 const inquirer = require ('inquirer');
-const db = require('./SQLquery/config/connection');
 const {viewAllDep,addADep} = require('./SQLquery/department')
 const {viewAllEmp}=require ('./SQLquery/emp')
 const {viewAllEmpRole}=require ('./SQLquery/emp_role')
 let inquireRes;
-let depList;
-
-db.query (`SELECT dep_name FROM department`,(err,results)=>{
-  if (err) throw (err);
-  depList = results.map(result => result.dep_name)
-})
 
 
 const options = ()=> {inquirer.prompt([
@@ -66,7 +59,7 @@ const options = ()=> {inquirer.prompt([
   { type: 'list',
     name: 'newRoleDep',
     message: 'What is the role`s department',
-    choices: depList,
+    choices: "dList",
     validate: function(input){
         if (input) {
         return true;
@@ -156,9 +149,6 @@ const options = ()=> {inquirer.prompt([
     },
     when: (answers)=> answers.updateRoleTitle ? true:false,
   },
-
-  
-
 ])
   .then ((res)=> inquireRes=res)
   .then (()=>SQLquery())  
@@ -178,7 +168,7 @@ const SQLquery =()=> {
       viewAllEmp()
     break;
     case "Add a department":
-      addADep(inquireRes.newDep)
+      addADep(inquireRes.newDep);
     break;
     case "Add a role":
 
