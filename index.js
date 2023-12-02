@@ -1,6 +1,6 @@
 const inquirer = require ('inquirer');
 const {viewAllDep,addADep,depList} = require('./SQLquery/department')
-const {viewAllEmp,addAnEmp,managerList}=require ('./SQLquery/emp')
+const {viewAllEmp,addAnEmp,nameList,updEmp}=require ('./SQLquery/emp')
 const {viewAllEmpRole,addARole,titleList}=require ('./SQLquery/emp_role')
 let inquireRes;
 
@@ -8,7 +8,7 @@ let inquireRes;
 const options = async ()=> {
   const dList = await depList();
   const tList = await titleList();
-  const mList = await managerList();
+  const nList = await nameList();
 
   await inquirer.prompt([
   { type: 'list',
@@ -107,37 +107,28 @@ const options = async ()=> {
     name: 'manager',
     message: 'Who is the manager',
     //use spread operator to add NULL in the name list.
-    choices: ['NULL',...mList],
+    choices: ['NULL',...nList],
     when: (answers)=> answers.first_name ? true:false,
   },
 
   //Update an employee role
-  { type: 'input',
-    name: 'updateRoleTitle',
-    message: 'Which role title you want to update',
+  { type: 'list',
+    name: 'empToUpdate',
+    message: 'Which employee`s role you want to update',
+    choices: nList,
     when: (answers)=> answers.options === 'Update an employee role',
   },
-  { type: 'input',
-    name: 'updateRoleSalary',
-    message: 'What is the updated salary',
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
-    when: (answers)=> answers.updateRoleTitle ? true:false,
+  { type: 'list',
+    name: 'updatedEmptitle',
+    message: 'What is the updated title',
+    choices: tList,
+    when: (answers)=> answers.empToUpdate ? true:false,
   },
-  { type: 'input',
-    name: 'updatedRoleDep',
-    message: 'What is the updated role`s department',
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
-    when: (answers)=> answers.updateRoleTitle ? true:false,
+  { type: 'list',
+    name: 'updatedEmpManager',
+    message: 'What is the employee`s manager',
+    choices: ['NULL',...nList],
+    when: (answers)=> answers.empToUpdate ? true:false,
   },
 ])
   .then ((res)=> inquireRes=res)
@@ -147,6 +138,7 @@ const options = async ()=> {
 options()
 
 const SQLquery =()=> {
+  console.log(inquireRes)
   switch (inquireRes.options) {
     case "View all department":
       viewAllDep()
@@ -166,11 +158,14 @@ const SQLquery =()=> {
       addARole(newRoleTitle,newRoleSalary,newRoleDep);
     break;
     case "Add an employee":
+      //object destructuring
       const {first_name,last_name,title,manager} = inquireRes
       addAnEmp(first_name,last_name,title,manager);
     break;
     case "Update an employee role":
-  
+      //object destructuring
+      const {empToUpdate,updatedEmptitle,updatedEmpManager} = inquireRes
+      updEmp(empToUpdate,updatedEmptitle,updatedEmpManager);
     break;
   }
   options()
