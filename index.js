@@ -1,11 +1,14 @@
 const inquirer = require ('inquirer');
-const {viewAllDep,addADep} = require('./SQLquery/department')
+const {viewAllDep,addADep,depList} = require('./SQLquery/department')
 const {viewAllEmp}=require ('./SQLquery/emp')
 const {viewAllEmpRole}=require ('./SQLquery/emp_role')
 let inquireRes;
 
 
-const options = ()=> {inquirer.prompt([
+async function options() {
+  const dList = await depList();
+
+  await inquirer.prompt([
   { type: 'list',
     name: 'options',
     message: 'What would you like to do?',
@@ -59,7 +62,7 @@ const options = ()=> {inquirer.prompt([
   { type: 'list',
     name: 'newRoleDep',
     message: 'What is the role`s department',
-    choices: "dList",
+    choices: dList,
     validate: function(input){
         if (input) {
         return true;

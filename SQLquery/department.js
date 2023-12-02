@@ -14,11 +14,9 @@ function addADep(newDep) {
     console.log('successfully added a new department')}); 
 }
 
-// async function depList() {
-//     const[rows,fields] = await db.promise().query('SELECT dep_name FROM department');
-//     console.log([rows,fields])
-// }
+async function depList() {
+    const [dLists] = await db.promise().query('SELECT dep_name FROM department');
+    return dLists.map (dl =>dl.dep_name);
+}
 
-// depList()
-
-module.exports = {viewAllDep,addADep};
+module.exports = {viewAllDep,addADep,depList};
