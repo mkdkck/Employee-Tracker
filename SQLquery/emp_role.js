@@ -22,5 +22,9 @@ function addARole(title,salary,dep) {
     console.error(err);
 })}
 
+async function titleList() {
+  const [tLists] = await db.promise().query('SELECT title FROM employee_role');
+  return tLists.map (tl =>tl.title);
+}
 
-module.exports = {viewAllEmpRole,addARole};
+module.exports = {viewAllEmpRole,addARole,titleList};

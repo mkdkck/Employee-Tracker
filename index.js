@@ -1,12 +1,14 @@
 const inquirer = require ('inquirer');
 const {viewAllDep,addADep,depList} = require('./SQLquery/department')
-const {viewAllEmp}=require ('./SQLquery/emp')
-const {viewAllEmpRole,addARole}=require ('./SQLquery/emp_role')
+const {viewAllEmp,managerList}=require ('./SQLquery/emp')
+const {viewAllEmpRole,addARole,titleList}=require ('./SQLquery/emp_role')
 let inquireRes;
 
 
 const options = async ()=> {
   const dList = await depList();
+  const tList = await titleList();
+  const mList = await managerList();
 
   await inquirer.prompt([
   { type: 'list',
@@ -95,9 +97,10 @@ const options = async ()=> {
     },
     when: (answers)=> answers.first_name ? true:false,
   },
-  { type: 'input',
-    name: 'role_id',
+  { type: 'list',
+    name: 'title',
     message: 'What is the title',
+    choices: tList,
     validate: function(input){
         if (input) {
         return true;
@@ -106,9 +109,10 @@ const options = async ()=> {
     },
     when: (answers)=> answers.first_name ? true:false,
   },
-  { type: 'input',
+  { type: 'list',
     name: 'manager_id',
     message: 'Who is the manager',
+    choices: [mList,'NULL'],
     validate: function(input){
         if (input) {
         return true;

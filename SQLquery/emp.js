@@ -11,4 +11,9 @@ function viewAllEmp () {
     })
 };
 
-module.exports = {viewAllEmp};
+async function managerList() {
+    const [mLists] = await db.promise().query(`SELECT CONCAT(first_name, ' ', last_name) AS nameList FROM employee`);
+    return mLists.map (ml =>ml.nameList);
+}
+
+module.exports = {viewAllEmp,managerList};
