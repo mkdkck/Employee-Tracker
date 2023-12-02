@@ -1,6 +1,6 @@
 const inquirer = require ('inquirer');
 const {viewAllDep,addADep,depList} = require('./SQLquery/department')
-const {viewAllEmp,managerList}=require ('./SQLquery/emp')
+const {viewAllEmp,addAnEmp,managerList}=require ('./SQLquery/emp')
 const {viewAllEmpRole,addARole,titleList}=require ('./SQLquery/emp_role')
 let inquireRes;
 
@@ -65,12 +65,6 @@ const options = async ()=> {
     name: 'newRoleDep',
     message: 'What is the role`s department',
     choices: dList,
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
     when: (answers)=> answers.newRoleTitle ? true:false,
   },
 
@@ -110,15 +104,10 @@ const options = async ()=> {
     when: (answers)=> answers.first_name ? true:false,
   },
   { type: 'list',
-    name: 'manager_id',
+    name: 'manager',
     message: 'Who is the manager',
-    choices: [mList,'NULL'],
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
+    //use spread operator to add NULL in the name list.
+    choices: ['NULL',...mList],
     when: (answers)=> answers.first_name ? true:false,
   },
 
@@ -126,12 +115,6 @@ const options = async ()=> {
   { type: 'input',
     name: 'updateRoleTitle',
     message: 'Which role title you want to update',
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
     when: (answers)=> answers.options === 'Update an employee role',
   },
   { type: 'input',
@@ -178,10 +161,13 @@ const SQLquery =()=> {
       addADep(inquireRes.newDep);
     break;
     case "Add a role":
-      addARole(inquireRes.newRoleTitle,inquireRes.newRoleSalary,inquireRes.newRoleDep);
+      //object destructuring
+      const {newRoleTitle,newRoleSalary,newRoleDep} = inquireRes
+      addARole(newRoleTitle,newRoleSalary,newRoleDep);
     break;
     case "Add an employee":
-  
+      const {first_name,last_name,title,manager} = inquireRes
+      addAnEmp(first_name,last_name,title,manager);
     break;
     case "Update an employee role":
   
