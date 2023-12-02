@@ -1,5 +1,5 @@
 const inquirer = require ('inquirer');
-const {viewAllDep,addADep,depList} = require('./SQLquery/department')
+const {viewAllDep,addADep,depList,depBud,del} = require('./SQLquery/department')
 const {viewAllEmp,addAnEmp,nameList,updEmp}=require ('./SQLquery/emp')
 const {viewAllEmpRole,addARole,titleList}=require ('./SQLquery/emp_role')
 let inquireRes;
@@ -22,8 +22,44 @@ const options = async ()=> {
       'Add a role',
       'Add an employee',
       'Update an employee role',
+      'Delete departments,roles or employees',
+      'View the total utilized budget of a department',
       'Exit'],
   },
+
+//delete records
+  { type: 'list',
+    name: 'deleteWhat',
+    message: 'Which record you want to delete',
+    choices: ['departments','roles', 'employees'],
+    when: (answers)=> answers.options === 'Delete departments,roles or employees',
+  }, 
+  { type: 'list',
+  name: 'deleteValue',
+  message: 'Which department you want to delete',
+  choices: dList,
+  when: (answers)=> answers.deleteWhat === 'departments',
+  }, 
+  { type: 'list',
+  name: 'deleteValue',
+  message: 'Which role you want to delete',
+  choices: tList,
+  when: (answers)=> answers.deleteWhat === 'roles',
+  }, 
+  { type: 'list',
+  name: 'deleteValue',
+  message: 'Which employee you want to delete',
+  choices: nList,
+  when: (answers)=> answers.deleteWhat === 'employees',
+  }, 
+
+  //View the total utilized budget of a department
+  { type: 'list',
+    name: 'depBudget',
+    message: 'Which department you want to know',
+    choices: dList,
+    when: (answers)=> answers.options === 'View the total utilized budget of a department',
+  },  
 
   //new department questions
   { type: 'input',
@@ -167,10 +203,18 @@ const SQLquery =()=> {
       const {empToUpdate,updatedEmptitle,updatedEmpManager} = inquireRes
       updEmp(empToUpdate,updatedEmptitle,updatedEmpManager);
     break;
+    case "Delete departments,roles or employees":
+      //object destructuring
+      const {deleteWhat,deleteValue} = inquireRes
+      del(deleteWhat,deleteValue)
+    break;
+    case "View the total utilized budget of a department":
+      depBud (inquireRes.depBudget);
+    break;
   }
   options()
 }
-  
-  
+
+
 
   

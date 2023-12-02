@@ -1,12 +1,12 @@
 const db = require('./config/connection');
 
 function viewAllEmp () {
-    db.query (`SELECT A.id, A.first_name, A.last_name, B.title, B.salary, C.dep_name AS department,
-    CONCAT(D.first_name, ' ', D.last_name) AS manager
-  FROM employee A
-  JOIN employee_role B ON A.role_id = B.id
-  JOIN department C ON B.dep_id = C.id
-  LEFT JOIN employee D ON A.manager_id = D.id
+    db.query (`SELECT E.id, E.first_name, E.last_name, ER.title, ER.salary, D.dep_name AS department,
+    CONCAT(EM.first_name, ' ', EM.last_name) AS manager
+  FROM employee E
+  LEFT JOIN employee_role ER ON E.role_id = ER.id
+  LEFT JOIN department D ON ER.dep_id = D.id
+  LEFT JOIN employee EM ON E.manager_id = EM.id
   ORDER BY id;`,(err,results) =>{
         console.table(results);
     })
