@@ -1,18 +1,16 @@
 const inquirer = require ('inquirer');
-const db = require('./SQLquery/config/connection');
-const {viewAllDep,addADep} = require('./SQLquery/department')
-const {viewAllEmp}=require ('./SQLquery/emp')
-const {viewAllEmpRole}=require ('./SQLquery/emp_role')
+const {viewAllDep,addADep,depList} = require('./SQLquery/department')
+const {viewAllEmp,addAnEmp,nameList,updEmp}=require ('./SQLquery/emp')
+const {viewAllEmpRole,addARole,titleList}=require ('./SQLquery/emp_role')
 let inquireRes;
-let depList;
-
-db.query (`SELECT dep_name FROM department`,(err,results)=>{
-  if (err) throw (err);
-  depList = results.map(result => result.dep_name)
-})
 
 
-const options = ()=> {inquirer.prompt([
+const options = async ()=> {
+  const dList = await depList();
+  const tList = await titleList();
+  const nList = await nameList();
+
+  await inquirer.prompt([
   { type: 'list',
     name: 'options',
     message: 'What would you like to do?',
@@ -66,13 +64,7 @@ const options = ()=> {inquirer.prompt([
   { type: 'list',
     name: 'newRoleDep',
     message: 'What is the role`s department',
-    choices: depList,
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
+    choices: dList,
     when: (answers)=> answers.newRoleTitle ? true:false,
   },
 
@@ -99,9 +91,10 @@ const options = ()=> {inquirer.prompt([
     },
     when: (answers)=> answers.first_name ? true:false,
   },
-  { type: 'input',
-    name: 'role_id',
+  { type: 'list',
+    name: 'title',
     message: 'What is the title',
+    choices: tList,
     validate: function(input){
         if (input) {
         return true;
@@ -110,55 +103,33 @@ const options = ()=> {inquirer.prompt([
     },
     when: (answers)=> answers.first_name ? true:false,
   },
-  { type: 'input',
-    name: 'manager_id',
+  { type: 'list',
+    name: 'manager',
     message: 'Who is the manager',
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
+    //use spread operator to add NULL in the name list.
+    choices: ['NULL',...nList],
     when: (answers)=> answers.first_name ? true:false,
   },
 
   //Update an employee role
-  { type: 'input',
-    name: 'updateRoleTitle',
-    message: 'Which role title you want to update',
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
+  { type: 'list',
+    name: 'empToUpdate',
+    message: 'Which employee`s role you want to update',
+    choices: nList,
     when: (answers)=> answers.options === 'Update an employee role',
   },
-  { type: 'input',
-    name: 'updateRoleSalary',
-    message: 'What is the updated salary',
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
-    when: (answers)=> answers.updateRoleTitle ? true:false,
+  { type: 'list',
+    name: 'updatedEmptitle',
+    message: 'What is the updated title',
+    choices: tList,
+    when: (answers)=> answers.empToUpdate ? true:false,
   },
-  { type: 'input',
-    name: 'updatedRoleDep',
-    message: 'What is the updated role`s department',
-    validate: function(input){
-        if (input) {
-        return true;
-        } else{
-        return 'The input cannot be NULL'}
-    },
-    when: (answers)=> answers.updateRoleTitle ? true:false,
+  { type: 'list',
+    name: 'updatedEmpManager',
+    message: 'What is the employee`s manager',
+    choices: ['NULL',...nList],
+    when: (answers)=> answers.empToUpdate ? true:false,
   },
-
-  
-
 ])
   .then ((res)=> inquireRes=res)
   .then (()=>SQLquery())  
@@ -167,6 +138,7 @@ const options = ()=> {inquirer.prompt([
 options()
 
 const SQLquery =()=> {
+  console.log(inquireRes)
   switch (inquireRes.options) {
     case "View all department":
       viewAllDep()
@@ -178,21 +150,25 @@ const SQLquery =()=> {
       viewAllEmp()
     break;
     case "Add a department":
-      addADep(inquireRes.newDep)
+      addADep(inquireRes.newDep);
     break;
     case "Add a role":
-
+      //object destructuring
+      const {newRoleTitle,newRoleSalary,newRoleDep} = inquireRes
+      addARole(newRoleTitle,newRoleSalary,newRoleDep);
     break;
     case "Add an employee":
-  
+      //object destructuring
+      const {first_name,last_name,title,manager} = inquireRes
+      addAnEmp(first_name,last_name,title,manager);
     break;
     case "Update an employee role":
-  
+      //object destructuring
+      const {empToUpdate,updatedEmptitle,updatedEmpManager} = inquireRes
+      updEmp(empToUpdate,updatedEmptitle,updatedEmpManager);
     break;
   }
-  
-  setTimeout(()=>
-    options(), 500)
+  options()
 }
   
   
