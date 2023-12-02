@@ -10,4 +10,10 @@ function viewAllEmpRole () {
     });
 };
 
+function addADep(newDep) {
+  db.query (`INSERT INTO department (dep_name) VALUES (?)`,newDep,(err,results) =>{
+   if (err) throw (err);
+   console.log('successfully added a new role')}); 
+}
+
 module.exports = {viewAllEmpRole};

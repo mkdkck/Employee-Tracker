@@ -183,9 +183,7 @@ const SQLquery =()=> {
   
     break;
   }
-  
-  setTimeout(()=>
-    options(), 500)
+  options()
 }
   
   
