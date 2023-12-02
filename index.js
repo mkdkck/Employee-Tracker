@@ -1,11 +1,11 @@
 const inquirer = require ('inquirer');
 const {viewAllDep,addADep,depList} = require('./SQLquery/department')
 const {viewAllEmp}=require ('./SQLquery/emp')
-const {viewAllEmpRole}=require ('./SQLquery/emp_role')
+const {viewAllEmpRole,addARole}=require ('./SQLquery/emp_role')
 let inquireRes;
 
 
-async function options() {
+const options = async ()=> {
   const dList = await depList();
 
   await inquirer.prompt([
@@ -174,7 +174,7 @@ const SQLquery =()=> {
       addADep(inquireRes.newDep);
     break;
     case "Add a role":
-
+      addARole(inquireRes.newRoleTitle,inquireRes.newRoleSalary,inquireRes.newRoleDep);
     break;
     case "Add an employee":
   
