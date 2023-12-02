@@ -174,7 +174,6 @@ const options = async ()=> {
 options()
 
 const SQLquery =()=> {
-  console.log(inquireRes)
   switch (inquireRes.options) {
     case "View all department":
       viewAllDep()
@@ -211,10 +210,8 @@ const SQLquery =()=> {
     case "View the total utilized budget of a department":
       depBud (inquireRes.depBudget);
     break;
+    case "Exit":
+      process.exit();
   }
   options()
 }
-
-
-
-  
