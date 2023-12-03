@@ -174,7 +174,6 @@ const options = async ()=> {
 options()
 
 const SQLquery =()=> {
-  console.log(inquireRes)
   switch (inquireRes.options) {
     case "View all department":
       viewAllDep()
